@@ -31,17 +31,33 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+    # api app definition
+    'dsc_connect_app.apps.DscConnectAppConfig',
+    # additional framework to build REST API
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # to handle cross origin resource requests
+    'corsheaders',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -50,6 +66,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'dsc_connect_backend.urls'
+
+
 
 TEMPLATES = [
     {
@@ -100,6 +118,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+CORS_ORIGIN_WHITELIST = (
+    
+    'http://localhost:3000',
+    'http://localhost:8000',
+)
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -118,3 +142,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [ # new
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
+],
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_HOST = ‘smtp.gmail.com’
+#EMAIL_USE_TLS = True
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = ‘shashank16jaitly@gmail.com’
+#EMAIL_HOST_PASSWORD = ‘’
+#EMAIL_USE_SSL = False
+
+
+SITE_ID = 1 
