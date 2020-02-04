@@ -11,8 +11,9 @@ class Dsc(models.Model):
 	
 	author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 	status = models.CharField(max_length=1, choices = STATUS_CHOICES)
-	lead = models.CharField(max_length = 200 , blank = False)
+	lead = models.CharField(max_length = 256 , blank = False)
 	name = models.CharField(max_length=50)
+	quote = models.CharField(max_length = 512)
 	gmail = models.EmailField(blank=True)
 	cover = models.ImageField(upload_to='images/')
 	city = models.CharField(max_length=300)

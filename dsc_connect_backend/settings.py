@@ -93,9 +93,13 @@ WSGI_APPLICATION = 'dsc_connect_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dsc_connect_database',
+        'USER': 'dsc_connect_user',
+        'PASSWORD': 'default123',
+        'HOST': 'localhost',
+        'PORT': '',
+        }
 }
 
 
