@@ -6,8 +6,16 @@ from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from django.http import JsonResponse
 
 #api-root page will show the list of all verified dscs
+def custom404(request, exception=None):
+    return JsonResponse({
+        'status_code': 404,
+        'error': 'You Popped into a Wrong Page!! Ben Stokes'
+    })
+
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
