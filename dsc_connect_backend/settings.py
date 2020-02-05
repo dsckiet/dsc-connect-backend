@@ -96,11 +96,11 @@ WSGI_APPLICATION = 'dsc_connect_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dsc_connect_database',
-        'USER': 'dsc_connect_user',
-        'PASSWORD': 'default123',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'dnvqvq852vbj6',
+        'USER': 'fwusmpscnubewl',
+        'PASSWORD': 'fc1881350a8403b5a52d43a4f1d53b96cc9b09d42626a9d51570fa9cc1bd177a',
+        'HOST': 'ec2-34-192-30-15.compute-1.amazonaws.com',
+        'PORT': '5432',
         }
 }
 db_from_env = dj_database_url.config(conn_max_age=600)
@@ -175,7 +175,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+#SECRET_KEY = os.environ.get('SECRET_KEY')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
