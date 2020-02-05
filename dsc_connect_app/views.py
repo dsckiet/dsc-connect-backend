@@ -30,6 +30,7 @@ class DscList(generics.ListCreateAPIView):
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 	def perform_create(self, serializer):
+		print('ss')
 		queryset = Dsc.objects.filter(author = self.request.user)
 		if queryset.exists():
 			raise ValidationError('You already lead a Dsc!!')
