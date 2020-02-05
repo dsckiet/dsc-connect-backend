@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 STATUS_CHOICES = [
 	('0','draft'),
@@ -14,6 +15,7 @@ class Dsc(models.Model):
 	lead = models.CharField(max_length = 256 , blank = False)
 	name = models.CharField(max_length=50)
 	quote = models.CharField(max_length = 512)
+	domains =models.CharField(max_length = 512, blank = True)
 	gmail = models.EmailField(blank=True)
 	cover = models.ImageField(upload_to='images/')
 	city = models.CharField(max_length=300)

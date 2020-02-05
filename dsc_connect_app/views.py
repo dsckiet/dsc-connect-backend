@@ -18,8 +18,8 @@ def custom404(request, exception=None):
 
 @api_view(['GET'])
 def api_root(request, format=None):
-    return Response({
-        'dsc_connect_app': reverse('dsc-list', request = request, format = format)
+    return JsonResponse({
+    	Dsc.objects.all()
     })
 
 
