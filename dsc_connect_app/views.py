@@ -19,9 +19,8 @@ def custom404(request, exception=None):
 @api_view(['GET'])
 def api_root(request, format=None):
     return JsonResponse({
-    	'queryset' : Dsc.objects.filter(status = '1'),
-    	'serializer_class ': DscSerializers
-    	})
+    	Dsc.objects.all()
+    })
 
 
 # view to show list of all DSCs and register one if not already registered!!
@@ -31,7 +30,6 @@ class DscList(generics.ListCreateAPIView):
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 	def perform_create(self, serializer):
-
 		queryset = Dsc.objects.filter(author = self.request.user)
 		if queryset.exists():
 			raise ValidationError('You already lead a Dsc!!')
