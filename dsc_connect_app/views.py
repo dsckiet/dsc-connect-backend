@@ -19,7 +19,8 @@ def custom404(request, exception=None):
 @api_view(['GET'])
 def api_root(request, format=None):
     return JsonResponse({
-    	Dsc.objects.all()
+    	'queryset' : Dsc.objects.filter(status = '1')
+    	'serializer_class': DscSerializers
     })
 
 
