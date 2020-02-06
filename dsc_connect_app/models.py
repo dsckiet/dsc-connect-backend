@@ -11,7 +11,7 @@ class Dsc(models.Model):
 	
 	
 	author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-	status = models.CharField(max_length=1, choices = STATUS_CHOICES)
+	status = models.CharField(max_length=1, choices = STATUS_CHOICES, default = STATUS_CHOICES[0][0])
 	lead = models.CharField(max_length = 256 , blank = False)
 	name = models.CharField(max_length=50)
 	quote = models.CharField(max_length = 512)
