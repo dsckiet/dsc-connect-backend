@@ -15,24 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import handler404
-from django.http import JsonResponse
+
+
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('dsc_connect_app.urls')),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/v1/rest-auth/', include('rest_auth.urls')), 
-    path('api/v1/rest-auth/registration/', include('rest_auth.registration.urls')),
+    
 ]
-
-def custom(request, exception=None):
-    return JsonResponse({
-        'status_code': 404,
-        'error': 'You Popped into a Wrong Page!! Ben Stokes'
-    })
-
-#if settings.DEBUG:
-#    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-handler404 = custom
