@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Dsc
+from .models import Dsc, User
 
 def make_published(modeladmin, request, queryset):
     queryset.update(status ='1')
@@ -17,6 +17,7 @@ class DscAdmin(admin.ModelAdmin):
         return actions
 # Register your models here.
 admin.site.register(Dsc,DscAdmin)
+admin.site.register(User)
 
 
 
