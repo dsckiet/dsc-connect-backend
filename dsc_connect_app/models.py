@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model to implement login with phone_number and password
     """
+    username = models.CharField(_('username'), max_length=56, blank=True)
     email = models.EmailField(_('email address'), blank=True, unique = True)
     phone_number = models.CharField(_('phone number'), max_length=10, unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
