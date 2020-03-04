@@ -1,7 +1,17 @@
 from .models import Dsc, User
 
-from .serializers import DscSerializer, UserSerializer, RegistrationSerializer
-from rest_framework import viewsets, mixins, status
+from .serializers import (
+    DscSerializer, 
+    UserSerializer, 
+    RegistrationSerializer)
+
+from .permissions import (
+    IsAdminOrSuperUser,
+    CustomOrIsAdminOrSuperUserPermission,
+    IsSuperUserOrReadOnly,
+    IsSuperUser)
+
+from rest_framework import viewsets, mixins, status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -29,18 +39,17 @@ class DscViewSet(mixins.CreateModelMixin,
                 mixins.UpdateModelMixin,
                 mixins.ListModelMixin,
                 viewsets.GenericViewSet):
-    serializer_class = DscSerializer
-    queryset = Dsc.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = DscFilter
-    permission_class = []
 
-    # def list(self, request):
-    #     return Response({
-    #     	'data':,
-    #     	'error':,
-    #     	'msg':,
-    #     	})
+    def list(self, request):
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+        return Response({
+         	'error':False,
+         	'msg': 'List of Dscs',
+            'data': serializer.data,
+         	},status =status.HTTP_200_OK )
 
     # def create(self, request):
     #     pass
@@ -57,40 +66,73 @@ class DscViewSet(mixins.CreateModelMixin,
     # def destroy(self, request, pk=None):
     #     pass
 
-class UserViewset(mixins.CreateModelMixin, 
-                mixins.RetrieveModelMixin, 
-                mixins.UpdateModelMixin,
-                mixins.DestroyModelMixin,
-                mixins.ListModelMixin,
-                viewsets.GenericViewSet):
-	serializer_class = UserSerializer
-	queryset = User.objects.all()
-	permission_class = []
+class UserAPIView( 
+                generics.ListAPIView):
+	
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        permission_classes = (IsAdminOrSuperUser,)
+        filter_backends = [OrderingFilter]
+        
+        return Response({
+         	'data': serializer.data,
+         	'error': False,
+         	'msg':'List of Users',
+            }, status = status.HTTP_200_OK)
 
-	# def list(self, request):
- #        queryset = User.objects.all()
- #        serializer = UserSerializer(queryset, many=True)
- #        return Response({
- #        	'data':,
- #        	'error':,
- #        	'msg':,
+class UserProfileAPIView(
+    generics.RetrieveUpdateDestroyAPIView):
 
- #        	})
+    def retrieve(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
 
- #    def create(self, request):
- #        pass
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'msg': 'Your Dsc'
+            }, status= status.HTTP_200_OK)
 
- #    def retrieve(self, request, pk=None):
- #        pass
 
- #    def update(self, request, pk=None):
- #        pass
+    def update(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
 
- #    def partial_update(self, request, pk=None):
- #        pass
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'msg': 'User Profile Update Successfully',
+            }, status= status.HTTP_200_OK)
 
- #    def destroy(self, request, pk=None):
- #        pass
+    def partial_update(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'msg': 'User Profile Update Successfully',
+            }, status= status.HTTP_200_OK)
+
+    def destroy(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (IsAdminOrSuperUser,)
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'msg': 'User Deleted Successfully'
+            }, status= status.HTTP_200_OK)
+
 
 class RegistrationView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
