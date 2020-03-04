@@ -22,6 +22,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('dsc_connect_app.urls')),
+    path('api/v1/', include('dsc_connect_app.urls')),
     
 ]
