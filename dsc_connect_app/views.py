@@ -42,12 +42,13 @@ class DscViewSet(mixins.CreateModelMixin,
     filter_backends = [DjangoFilterBackend]
     filterset_class = DscFilter
 
+
     def list(self, request):
         queryset = Dsc.objects.all()
         serializer = DscSerializer(queryset, many=True)
         return Response({
          	'error':False,
-         	'msg': 'List of Dscs',
+         	'message': 'List of Dscs',
             'data': serializer.data,
          	},status =status.HTTP_200_OK )
 
@@ -78,7 +79,7 @@ class UserAPIView(
         return Response({
          	'data': serializer.data,
          	'error': False,
-         	'msg':'List of Users',
+         	'message':'List of Users',
             }, status = status.HTTP_200_OK)
 
 class UserProfileAPIView(
@@ -93,7 +94,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'Your Dsc'
+            'message': 'User Profile'
             }, status= status.HTTP_200_OK)
 
 
@@ -106,7 +107,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Profile Update Successfully',
+            'message': 'User Profile Update Successfully',
             }, status= status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None):
@@ -118,7 +119,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Profile Update Successfully',
+            'message': 'User Profile Update Successfully',
             }, status= status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
@@ -130,7 +131,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Deleted Successfully'
+            'message': 'User Deleted Successfully'
             }, status= status.HTTP_200_OK)
 
 
