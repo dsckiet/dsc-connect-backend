@@ -46,6 +46,7 @@ class DscViewSet(mixins.CreateModelMixin,
     def list(self, request):
         queryset = Dsc.objects.all()
         serializer = DscSerializer(queryset, many=True)
+        permission_classes = (AllowAny,)
         return Response({
          	'error':False,
          	'message': 'List of Dscs',
@@ -55,17 +56,43 @@ class DscViewSet(mixins.CreateModelMixin,
     # def create(self, request):
     #     pass
 
-    # def retrieve(self, request, pk=None):
-    #     pass
+    def retrieve(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
 
-    # def update(self, request, pk=None):
-    #     pass
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'message': 'Your Dsc'
+            }, status= status.HTTP_200_OK)
 
-    # def partial_update(self, request, pk=None):
-    #     pass
+    def update(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
 
-    # def destroy(self, request, pk=None):
-    #     pass
+        return Response({
+            'error': False,
+            'data': serializer.data,
+            'message': 'Dsc Updated Successfully',
+            }, status= status.HTTP_200_OK)
+
+
+    def partial_update(self, request, pk=None):
+        lookup_field = 'pk'
+        permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'message': 'Dsc Updated Successfully',
+            }, status= status.HTTP_200_OK)
+
 
 class UserAPIView( 
                 generics.ListAPIView):
@@ -162,8 +189,6 @@ class LoginView(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
         # by default attempts username / passsword combination
         response = super(LoginView, self).post(request, *args, **kwargs)
-        # token = response.data['token']  # don't use this to prevent errors
-        # below will return null, but not an error, if not found :)
         res = response.data
         token = res.get('token')
 
@@ -210,4 +235,3 @@ class LoginView(ObtainJSONWebToken):
                         'token': token,
                         'user': user }, 
                         status=status.HTTP_200_OK)
-#You can change the default to check by email only if you please by customising Django's auth model, but I was happy to have both options.	
