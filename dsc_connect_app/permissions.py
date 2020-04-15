@@ -56,8 +56,6 @@ class IsSuperUserOrReadOnly(permissions.BasePermission):
             return False
 
 
-# Not sure why I did this mess but for some reason I loved it :D
-# TODO: Check if we are using this else delete it
 class CustomOrIsAdminOrSuperUserPermission(permissions.BasePermission):
     """
     Permission class to check that a user can update his own resource only
@@ -76,3 +74,5 @@ class CustomOrIsAdminOrSuperUserPermission(permissions.BasePermission):
                     int(view.kwargs['pk']) != int(request.user.id):
                 return False
             return True
+
+#TODO: 1. Permission for one dsc per user
