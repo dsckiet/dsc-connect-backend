@@ -13,10 +13,11 @@ from .permissions import (
 
 from rest_framework import viewsets, mixins, status, generics
 from rest_framework.response import Response
+from rest_framework.reverse import reverse  
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
 from django_filters import rest_framework
 
 from rest_framework_jwt.settings import api_settings
@@ -27,48 +28,189 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
+class ApiRoot(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    def list(self, request, format = None):
+        return Response({
+            'dsc_connect_app': reverse('dsc-list', request = request, format=format),
+            'users':reverse('user-list', request = request, format=format),
+            'signup':reverse('signup', request = request, format=format),
+            'login':reverse('login', request = request, format=format)
+            })
+
+
+
+
 class DscFilter(rest_framework.FilterSet):
-	domains = rest_framework.CharFilter(lookup_expr='icontains')
-	class Meta:
-		model = Dsc
-		fields = ('domains', 'country', 'name')
+ 	domains = rest_framework.CharFilter(lookup_expr='icontains')
+ 	class Meta:
+ 		model = Dsc
+ 		fields = ('domains', 'country', 'name')
 
 
-class DscViewSet(mixins.CreateModelMixin, 
-                mixins.RetrieveModelMixin, 
-                mixins.UpdateModelMixin,
-                mixins.ListModelMixin,
-                viewsets.GenericViewSet):
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = DscFilter
+class DscListAPIView(
+    generics.ListCreateAPIView):
 
+    permission_classes = (AllowAny,)
+    serializer_class = DscSerializer
+    
     def list(self, request):
         queryset = Dsc.objects.all()
         serializer = DscSerializer(queryset, many=True)
+        permission_classes = (AllowAny,)
+        filter_backends = [DjangoFilterBackend]
+        filterset_class = DscFilter
+
         return Response({
          	'error':False,
-         	'msg': 'List of Dscs',
+         	'message': 'List of Dscs',
             'data': serializer.data,
          	},status =status.HTTP_200_OK )
 
-    # def create(self, request):
-    #     pass
+    #TODO
+    def create(self, request):
+        permission_classes = (IsAuthenticated)
+        queryset1 = Dsc.objects.filter(author = self.request.user)
+        if queryset1.exists():
+            return Response({
+                'error': True,
+                'message': 'You already have a Dsc registered'
+                },status= status.HTTP_403_FORBIDDEN)
 
-    # def retrieve(self, request, pk=None):
-    #     pass
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+        if serializer.is_valid():
+            serializer.save() 
+            return Response({
+                'data': serializer.data,
+                'error': False,
+                'message': 'Dsc information Update Successfully',
+                }, status= status.HTTP_200_OK)
+        else:
+            return Response({
+                'error': True,
+                'message': serializer.errors
+                },status= status.HTTP_400_BAD_REQUEST)
 
-    # def update(self, request, pk=None):
-    #     pass
 
-    # def partial_update(self, request, pk=None):
-    #     pass
+class DscDetailAPIView(
+    generics.RetrieveUpdateDestroyAPIView):  
 
-    # def destroy(self, request, pk=None):
-    #     pass
+    def retrieve(self, request, pk=None):
+        try:
+            lookup_field = 'pk'
+        except NotFound:
+            return Response({
+                'error': True,
+                'message':'No match to query found'
+                },status = status.HTTP_404_NOT_FOUND)
+        try:
+            permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        except PermissionDenied:
+            return Response({
+                'error': True,
+                'message': 'You are not authorised to this page'
+                }, status= status.HTTP_403_FORBIDDEN)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'message': 'Your Dsc'
+            }, status= status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        try:
+            lookup_field = 'pk'
+        except NotFound:
+            return Response({
+                'error': True,
+                'message':'No match to query found'
+                },status = status.HTTP_404_NOT_FOUND)
+        try:
+            permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        except PermissionDenied:
+            return Response({
+                'error': True,
+                'message': 'You are not authorised to this page'
+                }, status= status.HTTP_403_FORBIDDEN)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+        if serializer.is_valid():
+            serializer.save() 
+            return Response({
+                'data': serializer.data,
+                'error': False,
+                'message': 'Dsc information Update Successfully',
+                }, status= status.HTTP_200_OK)
+        else:
+            return Response({
+                'error': True,
+                'message': serializer.errors
+                },status= status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        try:
+            lookup_field = 'pk'
+        except NotFound:
+            return Response({
+                'error': True,
+                'message':'No match to query found'
+                },status = status.HTTP_404_NOT_FOUND)
+        try:
+            permission_classes = (CustomOrIsAdminOrSuperUserPermission,)
+        except PermissionDenied:
+            return Response({
+                'error': True,
+                'message': 'You are not authorised to this page'
+                }, status= status.HTTP_403_FORBIDDEN)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+        if serializer.is_valid():
+            serializer.save() 
+            return Response({
+                'data': serializer.data,
+                'error': False,
+                'message': 'Dsc information Update Successfully',
+                }, status= status.HTTP_200_OK)
+        else:
+            return Response({
+                'error': True,
+                'message': serializer.errors
+                } ,status= status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        try:
+            lookup_field = 'pk'
+        except NotFound:
+            return Response({
+                'error': True,
+                'message':'No match to query found'
+                } ,status = status.HTTP_404_NOT_FOUND)
+        try:
+            permission_classes = (IsAdminOrSuperUser,)
+        except PermissionDenied:
+            return Response({
+                'error': True,
+                'message': 'You are not authorised to delete'
+                }, status= status.HTTP_403_FORBIDDEN)
+        queryset = Dsc.objects.all()
+        serializer = DscSerializer(queryset, many=True)
+
+        return Response({
+            'data': serializer.data,
+            'error': False,
+            'message': 'Dsc Deleted Successfully'
+            }, status= status.HTTP_200_OK)
+
 
 class UserAPIView( 
                 generics.ListAPIView):
 	
+    permission_classes = (AllowAny,)
+    
     def list(self, request):
         queryset = User.objects.all()
         serializer = UserSerializer(queryset, many=True)
@@ -78,7 +220,7 @@ class UserAPIView(
         return Response({
          	'data': serializer.data,
          	'error': False,
-         	'msg':'List of Users',
+         	'message':'List of Users',
             }, status = status.HTTP_200_OK)
 
 class UserProfileAPIView(
@@ -93,7 +235,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'Your Dsc'
+            'message': 'User Profile'
             }, status= status.HTTP_200_OK)
 
 
@@ -106,7 +248,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Profile Update Successfully',
+            'message': 'User Profile Update Successfully',
             }, status= status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None):
@@ -118,7 +260,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Profile Update Successfully',
+            'message': 'User Profile Update Successfully',
             }, status= status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
@@ -130,7 +272,7 @@ class UserProfileAPIView(
         return Response({
             'data': serializer.data,
             'error': False,
-            'msg': 'User Deleted Successfully'
+            'message': 'User Deleted Successfully'
             }, status= status.HTTP_200_OK)
 
 
@@ -209,4 +351,3 @@ class LoginView(ObtainJSONWebToken):
                         'token': token,
                         'user': user }, 
                         status=status.HTTP_200_OK)
-#You can change the default to check by email only if you please by customising Django's auth model, but I was happy to have both options.	
