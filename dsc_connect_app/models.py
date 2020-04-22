@@ -19,15 +19,15 @@ class Dsc(models.Model):
 	status = models.CharField(max_length=1, choices = STATUS_CHOICES, default = STATUS_CHOICES[0][1])
 	lead = models.CharField(max_length = 256 , blank = False)
 	name = models.CharField(max_length=50)
-	quote = models.CharField(max_length = 512)
-	domains =ArrayField(models.CharField(max_length = 512, blank = True))
+	quote = models.CharField(max_length = 512, blank= True)
+	domains =ArrayField(models.CharField(max_length = 512), blank = True)
 	gmail = models.EmailField(blank=True)
 	city = models.CharField(max_length=300)
 	state = models.CharField(max_length=300)
 	country = models.CharField(max_length=256)
 	team_size = models.IntegerField()
 	established_on =models.DateField(auto_now=False)
-	created_on = models.DateTimeField(auto_now_add=False)
+	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 	website = models.URLField(blank=True)
 	github = models.URLField(blank=True)
@@ -38,7 +38,7 @@ class Dsc(models.Model):
 	instagram = models.URLField(blank=True)
 	youtube = models.URLField(blank=True)
 	behance = models.URLField(blank=True)
-	custom = ArrayField(models.URLField(blank=True))
+	custom = ArrayField(models.URLField(),blank=True)
 	"""
 		add fields here!!
 	"""
