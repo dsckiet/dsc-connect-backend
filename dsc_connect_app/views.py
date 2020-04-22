@@ -11,14 +11,15 @@ from .permissions import (
     IsSuperUserOrReadOnly,
     IsSuperUser)
 
-from rest_framework import viewsets, mixins, status, generics
+from rest_framework import viewsets, mixins, status, generics, filters
 from rest_framework.response import Response
 from rest_framework.reverse import reverse  
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
 from django_filters import rest_framework
+from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+
 
 from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt.views import ObtainJSONWebToken
@@ -41,36 +42,51 @@ class ApiRoot(generics.ListAPIView):
 
 
 
-class DscFilter(rest_framework.FilterSet):
- 	domains = rest_framework.CharFilter(lookup_expr='icontains')
- 	class Meta:
- 		model = Dsc
- 		fields = ('domains', 'country', 'name')
+# class DscFilter(rest_framework.FilterSet):
+#  	domains = rest_framework.CharFilter(lookup_expr='icontains')
+#  	class Meta:
+#  		model = Dsc
+#  		fields = ('domains', 'country', 'name')
 
 
 class DscListAPIView(
     generics.ListCreateAPIView):
-
+    
+    queryset = Dsc.objects.filter(status = '1')
     permission_classes = (AllowAny,)
     serializer_class = DscSerializer
+    filter_backends = [filters.SearchFilter,]
+    search_fields = ['$domains','$city','$state','=name','$country']
     
-    def list(self, request):
-        queryset = Dsc.objects.all()
-        serializer = DscSerializer(queryset, many=True)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.serializer_class(queryset, many=True)
         permission_classes = (AllowAny,)
-        filter_backends = [DjangoFilterBackend]
-        filterset_class = DscFilter
+        
 
         return Response({
          	'error':False,
          	'message': 'List of Dscs',
             'data': serializer.data,
          	},status =status.HTTP_200_OK )
+    
+    def filter_queryset(self, queryset):
+        for backend in list(self.filter_backends):
+            queryset = backend().filter_queryset(self.request, queryset, self)
+        return queryset
+
 
     #TODO
     def create(self, request):
-        permission_classes = (IsAuthenticated)
-        queryset1 = Dsc.objects.filter(author = self.request.user)
+        try:
+            permission_classes = (IsAuthenticated)
+        except :
+            return Response({
+                'error':True,
+                'message':'You need to login first!'
+                },status=status.HTTP_403_FORBIDDEN)
+
+        queryset1 = Dsc.objects.filter(author=self.request.user.id)
         if queryset1.exists():
             return Response({
                 'error': True,
@@ -78,7 +94,7 @@ class DscListAPIView(
                 },status= status.HTTP_403_FORBIDDEN)
 
         queryset = Dsc.objects.all()
-        serializer = DscSerializer(queryset, many=True)
+        serializer = DscSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save() 
             return Response({
