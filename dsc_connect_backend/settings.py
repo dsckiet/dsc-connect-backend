@@ -176,4 +176,4 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 #REST_USE_JWT = True
 
 
-dhango_heroku.settings((locals()))
+django_heroku.settings((locals()))
