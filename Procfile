@@ -1,0 +1,1 @@
+web: gunicorn dsc_connect_backend.wsgi
