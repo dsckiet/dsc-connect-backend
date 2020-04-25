@@ -28,7 +28,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://dsc-connect-backend.herokuapp.com/','localhost']
+ALLOWED_HOSTS = ['dsc-connect-backend.herokuapp.com','localhost']
 
 
 # Application definition
