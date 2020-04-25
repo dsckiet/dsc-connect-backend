@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import django_heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -173,3 +174,6 @@ SITE_ID = 1
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 #REST_USE_JWT = True
+
+
+dhango_heroku.settings((locals()))
