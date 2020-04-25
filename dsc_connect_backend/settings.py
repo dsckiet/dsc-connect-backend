@@ -28,7 +28,7 @@ SECRET_KEY = '_hix4**qe3#b4#5+&btu8bhmxy-n08#$)ooc-f5oeq*l3*@x4w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['https://dsc-connect-backend.herokuapp.com/','localhost']
 
 
 # Application definition
