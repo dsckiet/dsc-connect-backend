@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import django_heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -22,13 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 import os
-#SECRET_KEY = os.environ['SECRET_KEY']
-SECRET_KEY = '_hix4**qe3#b4#5+&btu8bhmxy-n08#$)ooc-f5oeq*l3*@x4w'
+SECRET_KEY = os.environ['SECRET_KEY']
+#SECRET_KEY = '_hix4**qe3#b4#5+&btu8bhmxy-n08#$)ooc-f5oeq*l3*@x4w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['dsc-connect-backend.herokuapp.com']
 
 
 # Application definition
@@ -173,3 +174,6 @@ SITE_ID = 1
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 #REST_USE_JWT = True
+
+
+django_heroku.settings((locals()))
